@@ -9,8 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fone = $_POST['fone'];
     $email = $_POST['email'];
     $senha = $_POST['senha'];
-    $usuario->criar($nome, $sexo, $fone, $email, $senha);
-    header('Location: portal.php');
+    $isAdmin = isset($_POST['admin']) ? 1 : 0; // Verifica se o checkbox 'admin' está marcado
+
+    $usuario->criar($nome, $sexo, $fone, $email, $senha, $isAdmin);
+
+    // Redirecionamento para login.php após o registro
+    header('Location: login.php');
     exit();
 }
 ?>
@@ -55,10 +59,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="senha">Senha:</label>
                 <input type="password" name="senha" placeholder="Senha" required>
             </div>
+            <div class="input-group">
+                <label>
+                    <input type="checkbox" name="admin"> Administrador
+                </label>
+            </div>
             <input type="submit" value="Adicionar">
         </form>
     </div>
 </body>
 
 </html>
-

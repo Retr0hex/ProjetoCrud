@@ -1,10 +1,9 @@
 <?php
 session_start();
-include_once './Config/Config.php';
+include_once './Config/Config.php'; // Arquivo de configuração do banco de dados
 include_once './Classes/Usuario.php';
 include_once './Classes/Noticia.php';
 
-// Verifica se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: index.php');
     exit();
@@ -13,28 +12,11 @@ if (!isset($_SESSION['usuario_id'])) {
 $usuario = new Usuario($db);
 $noticia = new Noticia($db);
 
-// Deletar usuário se o parâmetro "deletar" estiver presente na URL
-if (isset($_GET['deletar'])) {
-    $id = $_GET['deletar'];
-    $usuario->deletar($id);
-    header('Location: portal.php');
-    exit();
-}
-
-// Deletar notícia se o formulário de deletar notícia foi submetido
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletar_noticia_id'])) {
-    $idnot = $_POST['deletar_noticia_id'];
-    $noticia->deletar($idnot);
-    header('Location: portal.php');
-    exit();
-}
-
 $dados_usuario = $usuario->lerPorId($_SESSION['usuario_id']);
 $nome_usuario = $dados_usuario['nome'];
+$admin = $usuario->isAdmin($_SESSION['usuario_id']); // Verifica se é administrador
 
-$dados_usuarios = $usuario->ler(); // Lista de todos os usuários
-
-$noticias = $noticia->lerTodas(); // Lista de todas as notícias
+$noticias = $noticia->lerTodas();
 
 function saudacao()
 {
@@ -47,6 +29,14 @@ function saudacao()
         return "Boa noite";
     }
 }
+
+// Processamento para deletar notícia
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletar_noticia_id'])) {
+    $idnot = $_POST['deletar_noticia_id'];
+    $noticia->deletar($idnot);
+    header('Location: portal.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -57,74 +47,97 @@ function saudacao()
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="portal.css" />
     <title>Portal</title>
+
+    <script>
+        function openModal(id, type) {
+            const modal = document.getElementById("confirmModal");
+            modal.style.display = "block";
+            modal.classList.add("bounceIn");
+            document.getElementById("confirmDelete").onclick = function () {
+                if (type === 'user') {
+                    window.location.href = `portal.php?deletar=${id}`;
+                } else if (type === 'news') {
+                    document.getElementById(`deleteNewsForm${id}`).submit();
+                }
+            };
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("confirmModal");
+            modal.classList.remove("bounceIn");
+            modal.classList.add("bounceOut");
+            setTimeout(function () {
+                modal.style.display = "none";
+                modal.classList.remove("bounceOut");
+            }, 500); // Aguarda o final da animação (0.5s)
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById("confirmModal");
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
 </head>
 
 <body>
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirmação</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Deseja mesmo excluir?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal()">Não</button>
+                <button id="confirmDelete" class="btn-confirm">Sim</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <h1><?php echo saudacao() . ", " . $nome_usuario; ?>!</h1>
         <div class="links">
-            <a href="registrar.php">Adicionar usuário</a>
+            <?php if ($admin) : ?>
+                <a href="admin.php">Administrar usuários</a>
+            <?php endif; ?>
+            <a href="adicionar_noticia.php">Adicionar Notícia</a>
             <a href="logout.php">Logout</a>
         </div>
         <br>
 
-        <!-- Tabela para exibir os usuários -->
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Sexo</th>
-                    <th>Fone</th>
-                    <th>Email</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $dados_usuarios->fetch(PDO::FETCH_ASSOC)) : ?>
-                    <tr>
-                        <td><?php echo $row['id']; ?></td>
-                        <td><?php echo $row['nome']; ?></td>
-                        <td><?php echo ($row['sexo'] === 'M') ? 'Masculino' : 'Feminino'; ?></td>
-                        <td><?php echo $row['fone']; ?></td>
-                        <td><?php echo $row['email']; ?></td>
-                        <td>
-                            <a href="editar.php?id=<?php echo $row['id']; ?>">Editar</a>
-                            <a href="portal.php?deletar=<?php echo $row['id']; ?>">Deletar</a>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-
-        <br>
-
-        <!-- Botão para adicionar notícia -->
-        <a href="adicionar_noticia.php" class="btn-adicionar">Adicionar Notícia</a>
-
-        <br><br>
-
-        <!-- Div para exibir as notícias -->
         <div class="noticias">
             <h2>Notícias</h2>
-            <?php while ($noticia = $noticias->fetch(PDO::FETCH_ASSOC)) : ?>
-                <div class="noticia">
-                    <h3><?php echo $noticia['titulo']; ?></h3>
-                    <p><?php echo $noticia['noticia']; ?></p>
-                    <p><strong>Data:</strong> <?php echo date('d/m/Y', strtotime($noticia['data'])); ?></p>
-                    <?php
-                    // Busca o autor da notícia pelo ID do usuário
-                    $autor = $usuario->lerPorId($noticia['idusu']);
-                    if ($autor) {
-                        echo "<p><strong>Autor:</strong> " . $autor['nome'] . "</p>";
-                    }
-                    ?>
-                    <form action="portal.php" method="post">
-                        <input type="hidden" name="deletar_noticia_id" value="<?php echo $noticia['idnot']; ?>">
-                        <input type="submit" value="Deletar">
-                    </form>
+            <?php if ($noticias->rowCount() == 0) : ?>
+                <div class="no-news">
+                    <img src="https://cdn1.iconfinder.com/data/icons/facebook-ui/48/additional_icons-28-256.png" height="80px" width="80px">
+                    <p>Nenhuma notícia por enquanto</p>
                 </div>
-            <?php endwhile; ?>
+            <?php else : ?>
+                <?php while ($noticia = $noticias->fetch(PDO::FETCH_ASSOC)) : ?>
+                    <div class="noticia">
+                        <h3><?php echo $noticia['titulo']; ?></h3>
+                        <p><?php echo $noticia['noticia']; ?></p>
+                        <p><strong>Data:</strong> <?php echo date('d/m/Y', strtotime($noticia['data'])); ?></p>
+                        <?php
+                        // Busca o autor da notícia pelo ID do usuário
+                        $autor = $usuario->lerPorId($noticia['idusu']);
+                        if ($autor) {
+                            echo "<p><strong>Autor:</strong> " . $autor['nome'] . "</p>";
+                        }
+                        ?>
+                        <form id="deleteNewsForm<?php echo $noticia['idnot']; ?>" action="portal.php" method="post">
+                            <input type="hidden" name="deletar_noticia_id" value="<?php echo $noticia['idnot']; ?>">
+                            <?php if ($admin || $noticia['idusu'] == $_SESSION['usuario_id']) : ?>
+                                <a href="javascript:void(0)" onclick="openModal(<?php echo $noticia['idnot']; ?>, 'news')">Deletar</a>
+                            <?php endif; ?>
+                        </form>
+                    </div>
+                <?php endwhile; ?>
+            <?php endif; ?>
         </div>
     </div>
 </body>
