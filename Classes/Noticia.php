@@ -1,5 +1,4 @@
 <?php
-
 class Noticia
 {
     private $conn;
@@ -42,6 +41,17 @@ class Noticia
         $query = "DELETE FROM " . $this->table_name . " WHERE idnot = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([$idnot]);
+        return $stmt;
+    }
+
+    public function lerTodasComAutor(){
+        $query = "
+            SELECT n.*, u.nome as nome_autor
+            FROM " . $this->table_name . " n
+            LEFT JOIN usuarios u ON n.idusu = u.id
+            ORDER BY n.data DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
         return $stmt;
     }
 }
