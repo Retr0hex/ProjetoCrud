@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result) {
         // Redirecionar para o portal após adicionar a notícia
-        header('Location: portal.php');
+        header('Location: portal_noticia.php');
         exit();
     } else {
         $erro = "Erro ao adicionar notícia. Por favor, tente novamente.";

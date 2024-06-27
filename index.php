@@ -1,13 +1,13 @@
 <?php
 session_start();
-include_once './Config/Config.php'; 
+include_once './Config/Config.php';
 include_once './Classes/Usuario.php';
 include_once './Classes/Noticia.php';
 
 $noticia = new Noticia($db);
 $usuario = new Usuario($db);
 
-$noticias = $noticia->lerTodasComAutor(); 
+$noticias = $noticia->lerTodasComAutor();
 ?>
 
 <!DOCTYPE html>
@@ -21,44 +21,20 @@ $noticias = $noticia->lerTodasComAutor();
 </head>
 
 <body>
-    
+
     <div class="container">
-       
-        <button >
-  <span onclick="location.href='login.php'"class="hover-underline-animation">Login</span>
-  <svg
-    id="arrow-horizontal"
-    xmlns="http://www.w3.org/2000/svg"
-    width="30"
-    height="10"
-    viewBox="0 0 46 16"
-  >
-    <path
-      id="Path_10"
-      data-name="Path 10"
-      d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z"
-      transform="translate(30)"
-    ></path>
-  </svg>
-</button>
-<button style="padding-left: 10px;">
-    <span onclick="location.href='registrar.php'" class="hover-underline-animation">Cadastro</span>
-    <svg
-        id="arrow-horizontal"
-        xmlns="http://www.w3.org/2000/svg"
-        width="30"
-        height="10"
-        viewBox="0 0 46 16"
-    >
-        <path
-        id="Path_10"
-        data-name="Path 10"
-        d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z"
-        transform="translate(30)"
-        ></path>
-    </svg>
-</button>
-        
+        <button>
+            <span onclick="location.href='login.php'" class="hover-underline-animation">Login</span>
+            <svg id="arrow-horizontal" xmlns="http://www.w3.org/2000/svg" width="30" height="10" viewBox="0 0 46 16">
+                <path id="Path_10" data-name="Path 10" d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z" transform="translate(30)"></path>
+            </svg>
+        </button>
+        <button style="padding-left: 10px;">
+            <span onclick="location.href='registrar.php'" class="hover-underline-animation">Cadastro</span>
+            <svg id="arrow-horizontal" xmlns="http://www.w3.org/2000/svg" width="30" height="10" viewBox="0 0 46 16">
+                <path id="Path_10" data-name="Path 10" d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z" transform="translate(30)"></path>
+            </svg>
+        </button>
         <h1>Notícias do grande mundo</h1>
 
         <div class="noticias">
@@ -79,21 +55,8 @@ $noticias = $noticia->lerTodasComAutor();
                 <?php endwhile; ?>
             <?php endif; ?>
         </div>
-        
+
     </div>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
