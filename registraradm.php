@@ -59,7 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="senha">Senha:</label>
                 <input type="password" name="senha" placeholder="Senha" required>
             </div>
-          
+            <div class="input-group">
+                <label>
+                    <input type="checkbox" name="admin"> Administrador
+                </label>
+            </div>
             <input type="submit" value="Adicionar">
         </form>
     </div>

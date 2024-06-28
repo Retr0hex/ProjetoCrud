@@ -10,33 +10,29 @@ $usuario = new Usuario($db);
 $noticias = $noticia->lerTodasComAutor();
 ?>
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="portal.css" />
+    <link rel="stylesheet" type="text/css" href="portal_noticia.css" />
     <title>Notícias</title>
 </head>
 
 <body>
-
+    <header class="header">
+        <div class="header-content">
+            <h1>Freakygram</h1>
+            <nav class="top-links">
+                <button onclick="location.href='login.php'" class="nav-button hover-underline-animation">Login</button>
+                <button onclick="location.href='registrar.php'" class="nav-button hover-underline-animation">Cadastro</button>
+            </nav>
+        </div>
+    </header>
     <div class="container">
-        <button>
-            <span onclick="location.href='login.php'" class="hover-underline-animation">Login</span>
-            <svg id="arrow-horizontal" xmlns="http://www.w3.org/2000/svg" width="30" height="10" viewBox="0 0 46 16">
-                <path id="Path_10" data-name="Path 10" d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z" transform="translate(30)"></path>
-            </svg>
-        </button>
-        <button style="padding-left: 10px;">
-            <span onclick="location.href='registrar.php'" class="hover-underline-animation">Cadastro</span>
-            <svg id="arrow-horizontal" xmlns="http://www.w3.org/2000/svg" width="30" height="10" viewBox="0 0 46 16">
-                <path id="Path_10" data-name="Path 10" d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z" transform="translate(30)"></path>
-            </svg>
-        </button>
         <h1>Notícias do grande mundo</h1>
-
         <div class="noticias">
             <?php if ($noticias->rowCount() == 0) : ?>
                 <div class="no-news">
@@ -55,8 +51,21 @@ $noticias = $noticia->lerTodasComAutor();
                 <?php endwhile; ?>
             <?php endif; ?>
         </div>
-
     </div>
+
+    <script>
+        // Exemplo de script JavaScript para interatividade na página (opcional)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Exemplo de ação ao clicar em um elemento
+            const noticias = document.querySelectorAll('.noticia');
+            noticias.forEach(noticia => {
+                noticia.addEventListener('click', function() {
+                    alert('Clicou na notícia: ' + this.querySelector('h3').textContent);
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
+

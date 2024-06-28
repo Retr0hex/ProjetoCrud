@@ -12,7 +12,7 @@
             $senha = $_POST['senha'];
             if($dados_usuario = $usuario->login($email, $senha)){
                 $_SESSION['usuario_id'] = $dados_usuario['id'];
-                header('location:portal_noticia.php');
+                header('location:portal.php');
                 exit();
             }else{
                 $mensagem_erro = "Credenciais inválidas!";

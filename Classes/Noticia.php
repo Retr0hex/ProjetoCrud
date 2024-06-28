@@ -1,4 +1,6 @@
 <?php
+// Noticia.php
+
 class Noticia
 {
     private $conn;
@@ -55,31 +57,21 @@ class Noticia
         return $stmt;
     }
 
-    // Método para ler todas as notícias ordenadas por título ou data
-    public function lerTodasOrdenadas($ordenacao){
-        $query = "SELECT * FROM " . $this->table_name . " ORDER BY ";
-        switch ($ordenacao) {
-            case 'titulo':
-                $query .= "titulo ASC";
-                break;
-            case 'data':
-                $query .= "data DESC";
-                break;
-            default:
-                $query .= "data DESC"; // Ordenação padrão por data DESC
-                break;
-        }
+    public function lerPorIdUsuario($idusu){
+        $query = "SELECT * FROM " . $this->table_name . " WHERE idusu = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->execute();
+        $stmt->execute([$idusu]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function buscarPorTitulo($titulo)
+    {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE titulo LIKE ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute(["%" . $titulo . "%"]);
         return $stmt;
     }
 
-    // Método para buscar notícias por título
-    public function buscarPorTitulo($termo){
-        $query = "SELECT * FROM " . $this->table_name . " WHERE titulo LIKE ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute(["%$termo%"]);
-        return $stmt;
-    }
+    // Métodos adicionais conforme necessário...
 }
 ?>

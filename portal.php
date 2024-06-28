@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once './Config/Config.php'; // Arquivo de configuração do banco de dados
+include_once './Config/Config.php'; 
 include_once './Classes/Usuario.php';
 include_once './Classes/Noticia.php';
 
@@ -14,9 +14,9 @@ $noticia = new Noticia($db);
 
 $dados_usuario = $usuario->lerPorId($_SESSION['usuario_id']);
 $nome_usuario = $dados_usuario['nome'];
-$admin = $usuario->isAdmin($_SESSION['usuario_id']); // Verifica se é administrador
+$admin = $usuario->isAdmin($_SESSION['usuario_id']);
 
-$noticias = $noticia->lerTodas();
+$noticias = $noticia->lerTodasComAutor(); 
 
 function saudacao()
 {
@@ -30,11 +30,10 @@ function saudacao()
     }
 }
 
-// Processamento para deletar notícia
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletar_noticia_id'])) {
     $idnot = $_POST['deletar_noticia_id'];
     $noticia->deletar($idnot);
-    header('Location: portal.php');
+    header('Location: portal.php?deletado=true');
     exit();
 }
 ?>
@@ -45,59 +44,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletar_noticia_id']))
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="portal.css" />
+    <link rel="stylesheet" href="portal_noticia.css">
     <title>Portal</title>
 
     <script>
-        function openModal(id, type) {
-            const modal = document.getElementById("confirmModal");
-            modal.style.display = "block";
-            modal.classList.add("bounceIn");
-            document.getElementById("confirmDelete").onclick = function () {
-                if (type === 'user') {
-                    window.location.href = `portal.php?deletar=${id}`;
-                } else if (type === 'news') {
-                    document.getElementById(`deleteNewsForm${id}`).submit();
+        let dataFiltrada = false;
+
+        function filtrarNoticias(ordem) {
+            const noticias = document.querySelectorAll('.noticia');
+
+            if (ordem === 'titulo') {
+                const noticiasArray = Array.from(noticias);
+                noticiasArray.sort((a, b) => {
+                    const tituloA = a.querySelector('h3').textContent.toUpperCase();
+                    const tituloB = b.querySelector('h3').textContent.toUpperCase();
+                    if (tituloA < tituloB) return -1;
+                    if (tituloA > tituloB) return 1;
+                    return 0;
+                });
+                noticiasArray.forEach(noticia => document.querySelector('.noticias').appendChild(noticia));
+                dataFiltrada = false;
+            } else if (ordem === 'data') {
+                if (!dataFiltrada) {
+                    const noticiasArray = Array.from(noticias);
+                    noticiasArray.sort((a, b) => {
+                        const dataA = new Date(a.querySelector('strong').nextSibling.nodeValue.trim().split(': ')[1]);
+                        const dataB = new Date(b.querySelector('strong').nextSibling.nodeValue.trim().split(': ')[1]);
+                        return dataB - dataA;
+                    });
+                    noticiasArray.forEach(noticia => document.querySelector('.noticias').appendChild(noticia));
+                    dataFiltrada = true;
+                } else {
+                    const noticiasArray = Array.from(noticias).reverse();
+                    noticiasArray.forEach(noticia => document.querySelector('.noticias').appendChild(noticia));
+                    dataFiltrada = false;
                 }
-            };
-        }
-
-        function closeModal() {
-            const modal = document.getElementById("confirmModal");
-            modal.classList.remove("bounceIn");
-            modal.classList.add("bounceOut");
-            setTimeout(function () {
-                modal.style.display = "none";
-                modal.classList.remove("bounceOut");
-            }, 500); // Aguarda o final da animação (0.5s)
-        }
-
-        window.onclick = function(event) {
-            const modal = document.getElementById("confirmModal");
-            if (event.target == modal) {
-                closeModal();
             }
         }
     </script>
 </head>
 
 <body>
-    <div id="confirmModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Confirmação</h2>
-                <span class="close" onclick="closeModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <p>Deseja mesmo excluir?</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeModal()">Não</button>
-                <button id="confirmDelete" class="btn-confirm">Sim</button>
-            </div>
-        </div>
-    </div>
-
     <div class="container">
         <h1><?php echo saudacao() . ", " . $nome_usuario; ?>!</h1>
         <div class="links">
@@ -108,6 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletar_noticia_id']))
             <a href="logout.php">Logout</a>
         </div>
         <br>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Pesquisar...">
+            <button onclick="filtrarNoticias('')">Pesquisar</button>
+            <button onclick="filtrarNoticias('titulo')">Ordem alfabética</button>
+            <button onclick="filtrarNoticias('data')">Data</button>
+        </div>
 
         <div class="noticias">
             <h2>Notícias</h2>
@@ -123,16 +116,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletar_noticia_id']))
                         <p><?php echo $noticia['noticia']; ?></p>
                         <p><strong>Data:</strong> <?php echo date('d/m/Y', strtotime($noticia['data'])); ?></p>
                         <?php
-                        // Busca o autor da notícia pelo ID do usuário
+                       
                         $autor = $usuario->lerPorId($noticia['idusu']);
                         if ($autor) {
                             echo "<p><strong>Autor:</strong> " . $autor['nome'] . "</p>";
                         }
                         ?>
+
+
+
+
+
                         <form id="deleteNewsForm<?php echo $noticia['idnot']; ?>" action="portal.php" method="post">
                             <input type="hidden" name="deletar_noticia_id" value="<?php echo $noticia['idnot']; ?>">
                             <?php if ($admin || $noticia['idusu'] == $_SESSION['usuario_id']) : ?>
-                                <a href="javascript:void(0)" onclick="openModal(<?php echo $noticia['idnot']; ?>, 'news')">Deletar</a>
+                                <a href="javascript:void(0)" onclick="if (confirm('Tem certeza que deseja deletar esta notícia?')) { document.getElementById('deleteNewsForm<?php echo $noticia['idnot']; ?>').submit(); }">Deletar</a>
                             <?php endif; ?>
                         </form>
                     </div>

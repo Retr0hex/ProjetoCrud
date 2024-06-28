@@ -1,6 +1,6 @@
 body {
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* Para alinhar os elementos verticalmente */
     align-items: center;
     margin: 0;
     background-color: #f0f0f0;
@@ -18,20 +18,37 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
+.header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 0;
     text-align: center;
-    margin-bottom: 20px;
-    color: #333;
+    border-radius: 8px 8px 0 0;
+    width: 100%; /* Para ocupar a largura total */
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.header-content h1 {
+    margin: 0;
+    font-size: 24px;
 }
 
 .top-links {
-    text-align: right;
-    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
 }
 
 .top-links a {
     text-decoration: none;
-    color: #007bff;
+    color: white;
     margin-right: 20px;
 }
 
@@ -40,6 +57,7 @@ h1 {
 }
 
 .search-bar {
+    text-align: center;
     margin-bottom: 10px;
 }
 
@@ -56,6 +74,7 @@ h1 {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    margin-left: 5px;
 }
 
 .search-bar button:hover {
@@ -172,7 +191,7 @@ p {
 
 button {
     font-size: 18px;
-    color: #000000;
+    color: #ffffff;
     font-family: inherit;
     font-weight: 800;
     cursor: pointer;
@@ -187,7 +206,7 @@ button {
 
 button:focus,
 button:hover {
-    color: #888888;
+    color: #f00303;
 }
 
 button:focus:after,
@@ -204,7 +223,7 @@ button:after {
     position: absolute;
     width: 0%;
     height: 2px;
-    background-color: #888888;
+    background-color: #ffffff;
     transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
     transition-duration: 400ms;
     transition-property: width, left;

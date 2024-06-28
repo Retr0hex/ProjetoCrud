@@ -1,4 +1,6 @@
 <?php
+// admin.php
+
 session_start();
 include_once './Config/Config.php';
 include_once './Classes/Usuario.php';
@@ -10,31 +12,25 @@ if (!isset($_SESSION['usuario_id'])) {
 
 $usuario = new Usuario($db);
 
-// Verifica se o usuário logado é administrador
 $usuario_id = $_SESSION['usuario_id'];
 if (!$usuario->isAdmin($usuario_id)) {
-    header('Location: portal.php'); // Redireciona para o portal se não for admin
+    header('Location: portal.php');
     exit();
 }
 
-// Verifica se foi solicitada a exclusão de um usuário
 if (isset($_POST['id'])) {
     $id_usuario_deletar = $_POST['id'];
 
-    // Impede que um admin exclua a si mesmo
     if ($id_usuario_deletar == $usuario_id) {
         header('Location: admin.php');
         exit();
     }
 
-    // Deleta o usuário
     $usuario->deletar($id_usuario_deletar);
-    exit(); // Termina o script após deletar o usuário
+    exit();
 }
 
-// Obtém todos os usuários para exibição na tabela
 $dados_usuarios = $usuario->ler();
-
 ?>
 
 <!DOCTYPE html>
@@ -48,7 +44,7 @@ $dados_usuarios = $usuario->ler();
 
     <script>
         function confirmarExclusao(id) {
-            if (confirm('Tem certeza que deseja deletar este usuário?')) {
+            if (confirm('Tem certeza que deseja deletar este usuário e todas as suas notícias?')) {
                 fetch('deletar_usuario.php', {
                     method: 'POST',
                     headers: {
@@ -59,12 +55,16 @@ $dados_usuarios = $usuario->ler();
                     if (response.ok) {
                         document.getElementById('user_' + id).remove();
                     } else {
-                        alert('Erro ao excluir usuário.' +);
+                        alert('Erro ao excluir usuário.');
                     }
                 }).catch(error => {
                     console.error('Erro ao tentar excluir usuário:', error);
                 });
             }
+        }
+
+        function editarUsuario(id) {
+            window.location.href = 'editar_usuario.php?id=' + id;
         }
     </script>
 </head>
@@ -73,7 +73,7 @@ $dados_usuarios = $usuario->ler();
     <div class="container">
         <h1>Administração de Usuários</h1>
         <div class="links">
-            <a href="registrar.php">Adicionar usuário</a>
+            <a href="registraradm.php">Adicionar usuário</a>
             <a href="logout.php">Logout</a>
         </div>
         <br>
@@ -98,11 +98,10 @@ $dados_usuarios = $usuario->ler();
                         <td><?php echo $row['fone']; ?></td>
                         <td><?php echo $row['email']; ?></td>
                         <td>
-                            <?php if ($row['id'] != $usuario_id) : ?>
-                                <a href="javascript:void(0);" onclick="confirmarExclusao(<?php echo $row['id']; ?>)">Deletar</a>
-                            <?php else : ?>
-                                <span>Não permitido</span>
-                            <?php endif; ?>
+                            <button onclick="confirmarExclusao(<?php echo $row['id']; ?>)">Deletar</button>
+                        </td>
+                        <td>
+                            <button onclick="editarUsuario(<?php echo $row['id']; ?>)">Editar</button>
                         </td>
                     </tr>
                 <?php endwhile; ?>
