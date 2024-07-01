@@ -1,3 +1,10 @@
+/* Reset de estilos básicos */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     display: flex;
     justify-content: center;
@@ -25,7 +32,7 @@ h1 {
 }
 
 .links {
-    text-align: rigth;
+    text-align: right;
     margin-bottom: 10px;
     padding-left: 88%;
 }
@@ -95,8 +102,6 @@ p {
     animation-fill-mode: both;
 }
 
-
-
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -150,11 +155,9 @@ p {
     color: black;
 }
 
-  
-
-  button {
+button {
     font-size: 18px;
-    color: #000000;
+    color: #000000; /* Cor preta */
     font-family: inherit;
     font-weight: 800;
     cursor: pointer;
@@ -164,21 +167,16 @@ p {
     text-transform: uppercase;
     transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
     transition-duration: 400ms;
-    transition-property: color;
-  }
-  
-  button:focus,
-  button:hover {
-    color: #888888;
-  }
-  
-  button:focus:after,
-  button:hover:after {
+    transition-property: color; /* Removido transition-property: color */
+}
+
+button:focus:after,
+button:hover:after {
     width: 100%;
     left: 0%;
-  }
-  
-  button:after {
+}
+
+button:after {
     content: "";
     pointer-events: none;
     bottom: -2px;
@@ -186,8 +184,9 @@ p {
     position: absolute;
     width: 0%;
     height: 2px;
-    background-color: #888888;
+    background-color: #000000;
     transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
     transition-duration: 400ms;
     transition-property: width, left;
-  }
+    color: black;
+}

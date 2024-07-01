@@ -118,14 +118,17 @@ button:after {
 }
 
 footer {
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.4);
-    color: #fff;
+    text-align: center; /* Centraliza o conteúdo horizontalmente */
+ 
+    color: #000000;
     padding: 10px;
-    position: fixed;
-    left: 0;
-    bottom: 0;
     width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
 }
 
-/* Fim do CSS */
+
+
+
+

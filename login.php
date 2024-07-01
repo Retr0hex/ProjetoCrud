@@ -1,35 +1,37 @@
 <?php
-    session_start();
-    include_once './Config/Config.php';
-    include_once './Classes/Usuario.php';
+session_start();
+include_once './Config/Config.php';
+include_once './Classes/Usuario.php';
 
-    $usuario = new Usuario($db);
+$usuario = new Usuario($db);
 
-    if($_SERVER['REQUEST_METHOD'] === "POST"){
-        if(isset($_POST['login'])){
-            // Processar login
-            $email = $_POST['email'];
-            $senha = $_POST['senha'];
-            if($dados_usuario = $usuario->login($email, $senha)){
-                $_SESSION['usuario_id'] = $dados_usuario['id'];
-                header('location:portal.php');
-                exit();
-            }else{
-                $mensagem_erro = "Credenciais inválidas!";
-            }
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
+    if (isset($_POST['login'])) {
+        // Processar login
+        $email = $_POST['email'];
+        $senha = $_POST['senha'];
+        if ($dados_usuario = $usuario->login($email, $senha)) {
+            $_SESSION['usuario_id'] = $dados_usuario['id'];
+            header('location:portal.php');
+            exit();
+        } else {
+            $mensagem_erro = "Credenciais inválidas!";
         }
     }
+}
 ?>
 
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="styles.css" />
     <title>Autenticação</title>
 </head>
+
 <body>
     <div class="container">
         <form method="POST">
@@ -49,14 +51,10 @@
             </div>
         </form>
     </div>
-    <footer>
+    <center><footer>
         &copy; Copyright Vitor Souza | 2024
-    </footer>
+    </footer></center>
     <br>
 </body>
+
 </html>
-
-
-
-
-

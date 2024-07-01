@@ -46,12 +46,18 @@ class Noticia
         return $stmt;
     }
 
+    public function buscarPorTitulo($termo){
+        $query = "SELECT * FROM " . $this->table_name . " WHERE titulo LIKE ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute(["%$termo%"]);
+        return $stmt;
+    }
+
     public function lerTodasComAutor(){
         $query = "
             SELECT n.*, u.nome as nome_autor
             FROM " . $this->table_name . " n
-            LEFT JOIN usuarios u ON n.idusu = u.id
-            ORDER BY n.data DESC";
+            LEFT JOIN usuarios u ON n.idusu = u.id";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
@@ -61,17 +67,25 @@ class Noticia
         $query = "SELECT * FROM " . $this->table_name . " WHERE idusu = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([$idusu]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function buscarPorTitulo($titulo)
-    {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE titulo LIKE ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute(["%" . $titulo . "%"]);
         return $stmt;
     }
 
-    // Métodos adicionais conforme necessário...
+    public function lerTodasComAutorOrdenadoPorTitulo(){
+        $query = "
+            SELECT n.*, u.nome as nome_autor
+            FROM " . $this->table_name . " n
+            LEFT JOIN usuarios u ON n.idusu = u.id
+            ORDER BY n.titulo ASC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    public function lerPorIdUsuarioOrdenadoPorTitulo($idusu){
+        $query = "SELECT * FROM " . $this->table_name . " WHERE idusu = ? ORDER BY titulo ASC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$idusu]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>
