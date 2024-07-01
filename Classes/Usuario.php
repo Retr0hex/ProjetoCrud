@@ -16,7 +16,7 @@ class Usuario
         $query = "INSERT INTO " . $this->table_name . " (nome, sexo, fone, email, senha, admin) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
         $hashed_password = password_hash($senha, PASSWORD_BCRYPT);
-        $stmt->execute([$nome, $sexo, $fone, $email, $hashed_password, $isAdmin]);
+        $stmt->execute([$nome, $sexo, $fone, $email, $hashed_password, $isAdmin = 0]);
         return $stmt; 
     }
 
@@ -94,6 +94,35 @@ class Usuario
         return false;
     }
 
-    // Métodos adicionais conforme necessário...
+    public function gerarCodigoVerificacao($email)
+    {
+        $codigo = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz"), 0, 10);
+        $query = "UPDATE " . $this->table_name . " SET codigo_verificacao = ? WHERE email = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$codigo, $email]);
+        return ($stmt->rowCount() > 0) ? $codigo : false;
+    }
+
+    // Verifica se o código de verificação é válido
+
+    public function verificarCodigo($codigo)
+    {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE codigo_verificacao = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$codigo]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Redefine a senha do usuário e remove o código de verificação
+
+    public function redefinirSenha($codigo, $senha)
+    {
+        $query = "UPDATE " . $this->table_name . " SET senha = ?, codigo_verificacao = NULL WHERE codigo_verificacao = ?";
+        $stmt = $this->conn->prepare($query);
+        $hashed_password = password_hash($senha, PASSWORD_BCRYPT);
+        $stmt->execute([$hashed_password, $codigo]);
+        return $stmt->rowCount() > 0;
+    }
 }
+
 ?>

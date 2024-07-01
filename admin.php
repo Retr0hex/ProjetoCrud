@@ -39,7 +39,8 @@ $dados_usuarios = $usuario->ler();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="portal.css" />
+    <link rel="stylesheet" type="text/css" href="admin.css" />
+
     <title>Administração de Usuários</title>
 
     <script>
@@ -70,6 +71,22 @@ $dados_usuarios = $usuario->ler();
 </head>
 
 <body>
+<header class="header">
+    <div class="header-content">
+        <div class="left">
+            <h1>Freakygram</h1>
+        </div>
+        <div class="right">
+            <nav class="top-links">
+                <?php if (isset($_SESSION['usuario_id'])) : ?>
+                    <button onclick="location.href='portal.php'" class="nav-button hover-underline-animation">Página inicial</button>
+                <?php endif; ?>
+                <button onclick="location.href='logout.php'" class="nav-button hover-underline-animation">Logout</button>
+            </nav>
+        </div>
+    </div>
+</header>
+
     <div class="container">
         <h1>Administração de Usuários</h1>
         <div class="links">
@@ -109,6 +126,9 @@ $dados_usuarios = $usuario->ler();
         </table>
 
     </div>
+    <footer>
+        &copy; Copyright Vitor Souza | 2024
+    </footer>
 </body>
 
 </html>

@@ -89,6 +89,10 @@ if (!$dados_usuario) {
             <input type="submit" value="Atualizar">
         </form>
     </div>
+    <footer>
+        &copy; Copyright Vitor Souza | 2024
+    </footer>
+    <br>
 </body>
 
 </html>

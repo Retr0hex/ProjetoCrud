@@ -67,6 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="submit" value="Adicionar">
         </form>
     </div>
+    <footer>
+        &copy; Copyright Vitor Souza | 2024
+    </footer>
+    <br>
 </body>
 
 </html>

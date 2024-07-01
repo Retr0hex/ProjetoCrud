@@ -1,0 +1,131 @@
+/* admin.css */
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 80%;
+    min-height: 100vh; /* Altura mínima igual à altura da viewport */
+    overflow-y: auto; /* Adiciona barra de rolagem vertical quando necessário */
+    margin: 80px auto 20px; /* Margin ajustada para dar espaço ao header fixo */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    background-color: #007bff;
+    color: #fff;
+    text-align: left; /* Alinha o conteúdo do header à esquerda */
+    width: 100%;
+    z-index: 1000; /* Garante que o header fique acima do conteúdo */
+    position: fixed; /* Fixa o header no topo da página */
+    top: 0;
+    left: 0;
+    height: 40px; /* Altura reduzida do header */
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between; /* Distribui os elementos nas extremidades */
+    align-items: center;
+    height: 100%; /* Garante que os elementos ocupem toda a altura do header */
+    padding: 0 10px; /* Reduzi o padding para ficar mais compacto */
+}
+
+.left {
+    flex: 1; /* Ocupa todo o espaço disponível à esquerda */
+}
+
+.right {
+    display: flex; /* Permite alinhar os botões à direita */
+}
+
+.links {
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.links a {
+    text-decoration: none;
+    color: #fff; /* Cor dos links no header */
+    margin-right: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.links a:hover {
+    text-decoration: underline;
+    color: #ccc; /* Cor dos links no hover */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 60px; /* Ajustei para um espaço padrão */
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+button {
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    background: none;
+    text-transform: uppercase;
+    transition: color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+button:focus, button:hover {
+    color: #888;
+}
+
+button:focus:after, button:hover:after {
+    width: 100%;
+    left: 0%;
+}
+
+button:after {
+    content: "";
+    pointer-events: none;
+    bottom: -2px;
+    left: 50%;
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    background-color: #888;
+    transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+footer {
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    padding: 10px;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Fim do CSS */

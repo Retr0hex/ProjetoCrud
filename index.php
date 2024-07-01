@@ -65,6 +65,10 @@ $noticias = $noticia->lerTodasComAutor();
             });
         });
     </script>
+     <footer>
+        &copy; Copyright Vitor Souza | 2024
+    </footer>
+    <br>
 </body>
 
 </html>
